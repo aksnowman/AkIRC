@@ -6,9 +6,11 @@ function linkTitlesModLink( $link ){
 
     // Convert imgur direct links to "gallery"/html versions
     if( "i.imgur.com" == $domain ){
-        $ext = end( explode( '.', strtolower( $link ) ) );
+        $tmp = explode( '.', strtolower( $link ) );
+        $ext = end( $tmp );
         if( in_array( $ext, array( "jpg", "png", "gif", "jpeg") ) ){
             $link = substr( $link, 0, -( 1 + strlen( $ext ) ) );
+            $link = str_replace( "://i.imgur", "://imgur", $link );
             echo "[TitleMod] Link: $link\n";
         }
     }
@@ -21,12 +23,24 @@ function linkTitlesModTitle( $title, $link = '' ){
 
     // Google search results
     if( in_array( $domain, array( "google.com", "www.google.com" ) ) ){
-        $tmp = explode( "&q=", $args );
-        if( 1 < count( $tmp ) && "Google" == $title ){
-            $tmp = explode( "&", $tmp[1] );
-            echo "[TitleMod] Google query: ".urldecode( $tmp[0] )."\n";
-            $title .= " - Query: ".urldecode( $tmp[0] );
+	if( false !== strpos( $args, "&q=" ) )
+	    $seperator = "&q=";
+	else if( false !== strpos( $args, "#q=" ) )
+	    $seperator = "#q=";
+	else
+	    $seperator = null;
+	if( null != $seperator ){
+            $tmp = explode( $seperator, $args, 2 );
+            if( 1 < count( $tmp ) && "Google" == $title ){
+                $tmp = explode( "&", $tmp[1] );
+                echo "[TitleMod] Google query: ".urldecode( $tmp[0] )."\n";
+                $title .= " - Query: ".urldecode( $tmp[0] );
+            }
         }
+    }
+    if( in_array( $domain, array( "imgur.com", "i.imgur.com" ) ) ){
+    	if( "imgur: the simple image sharer" == $title )
+    	    $title = '';
     }
     return $title;
 }

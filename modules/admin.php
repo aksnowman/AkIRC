@@ -32,5 +32,9 @@ function admin_privmsg( &$bot, &$parse ){
         echo "[admin] Displaying \$modVars\n";
         $bot->sendMsgHeaded( $parse['nick'], "admin", str_replace( "\r", "", str_replace( "\n", "", var_export( $modVars, true ) ) ) );
     }
+    if( isset( $cfg['admin']['rawcode'] ) && $cfg['admin']['rawcode'] == $parse['cmd'] ){
+        echo "[admin] Raw code received, running command\n";
+        $bot->sendCmd( $parse['cmdtxt'] );
+    }
 }
 

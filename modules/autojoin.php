@@ -31,8 +31,10 @@ function autojoin_connect( &$bot, $parse ){
 
     foreach( $cfg['autojoin'] as $chan ){
         $bot->join( $chan );
-        if( in_array( $parse['act'], array( 'kick' ) ) )
-            queueMessage( time() + 6, "JOIN $chan" );
+        if( in_array( $parse['act'], array( 'kick' ) ) ){
+	    if( function_exists( 'queueMessage' ) )
+               queueMessage( time() + 6, "JOIN $chan" );
+	}
     }
 }
 ?>

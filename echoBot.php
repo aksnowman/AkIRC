@@ -1,4 +1,5 @@
 <?php // v1.0.3
+date_default_timezone_set( "America/Anchorage" );
 set_time_limit( 0 );
 /* Load Config Info */
 $args = $argv;
@@ -22,7 +23,7 @@ file_put_contents( "phpBot.pid", getmypid() );
 include_once( 'class.akIRC.php' );
 $bot = new akIRC();
 
-$bot->debugOn();
+//$bot->debugOn();
 
 foreach( $cfg['servers'] as $label => $server )
     $bot->addServer( $label, $server );
@@ -69,6 +70,8 @@ if( isset( $cfg['loadModules'] ) ){
 
 	/* Call module constructors */
 	foreach( $modules as $mod ){
+		$tmp = explode( '/', $mod );
+		$mod = end( $tmp );
 		if( ! in_array( $mod, $loadedDeps ) ){
 			echo "[loadModules] Loading $mod\n";
 			if( true !== callFunction( $mod.'_construct', $bot, $modVars[$mod] ) )
